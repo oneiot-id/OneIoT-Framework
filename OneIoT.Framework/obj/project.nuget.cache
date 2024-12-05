@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "oRkIWKG3AOE=",
+  "dgSpecHash": "9yUvnFouwik=",
   "success": true,
-  "projectFilePath": "D:\\OneIoT Framework\\OneIoT.Framework\\OneIoT.Framework\\OneIoT.Framework.csproj",
+  "projectFilePath": "D:\\OneIoT Framework\\OneIoT.Framework\\OneIoT.Framework.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\vince\\.nuget\\packages\\opentk\\4.8.2\\opentk.4.8.2.nupkg.sha512",
     "C:\\Users\\vince\\.nuget\\packages\\opentk.audio.openal\\4.8.2\\opentk.audio.openal.4.8.2.nupkg.sha512",

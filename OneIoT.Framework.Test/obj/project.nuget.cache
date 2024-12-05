@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "DD/VMWe8HB0=",
+  "dgSpecHash": "3reeOCYHGPE=",
   "success": true,
-  "projectFilePath": "D:\\OneIoT Framework\\OneIoT.Framework\\OneIoT.Framework.Test\\OneIoT.Framework.Test.csproj",
+  "projectFilePath": "D:\\OneIoT Framework\\OneIoT.Framework.Test\\OneIoT.Framework.Test.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\vince\\.nuget\\packages\\coverlet.collector\\6.0.2\\coverlet.collector.6.0.2.nupkg.sha512",
     "C:\\Users\\vince\\.nuget\\packages\\microsoft.codecoverage\\17.11.1\\microsoft.codecoverage.17.11.1.nupkg.sha512",

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\OneIoT Framework\\OneIoT.Framework\\OneIoT.Framework.Test\\OneIoT.Framework.Test.csproj": {}
+    "D:\\OneIoT Framework\\OneIoT.Framework.Test\\OneIoT.Framework.Test.csproj": {}
   },
   "projects": {
-    "D:\\OneIoT Framework\\OneIoT.Framework\\OneIoT.Framework.Test\\OneIoT.Framework.Test.csproj": {
+    "D:\\OneIoT Framework\\OneIoT.Framework.Test\\OneIoT.Framework.Test.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\OneIoT Framework\\OneIoT.Framework\\OneIoT.Framework.Test\\OneIoT.Framework.Test.csproj",
+        "projectUniqueName": "D:\\OneIoT Framework\\OneIoT.Framework.Test\\OneIoT.Framework.Test.csproj",
         "projectName": "OneIoT.Framework.Test",
-        "projectPath": "D:\\OneIoT Framework\\OneIoT.Framework\\OneIoT.Framework.Test\\OneIoT.Framework.Test.csproj",
+        "projectPath": "D:\\OneIoT Framework\\OneIoT.Framework.Test\\OneIoT.Framework.Test.csproj",
         "packagesPath": "C:\\Users\\vince\\.nuget\\packages\\",
-        "outputPath": "D:\\OneIoT Framework\\OneIoT.Framework\\OneIoT.Framework.Test\\obj\\",
+        "outputPath": "D:\\OneIoT Framework\\OneIoT.Framework.Test\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -33,8 +33,8 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "D:\\OneIoT Framework\\OneIoT.Framework\\OneIoT.Framework\\OneIoT.Framework.csproj": {
-                "projectPath": "D:\\OneIoT Framework\\OneIoT.Framework\\OneIoT.Framework\\OneIoT.Framework.csproj"
+              "D:\\OneIoT Framework\\OneIoT.Framework\\OneIoT.Framework.csproj": {
+                "projectPath": "D:\\OneIoT Framework\\OneIoT.Framework\\OneIoT.Framework.csproj"
               }
             }
           }
@@ -95,14 +95,14 @@
         }
       }
     },
-    "D:\\OneIoT Framework\\OneIoT.Framework\\OneIoT.Framework\\OneIoT.Framework.csproj": {
+    "D:\\OneIoT Framework\\OneIoT.Framework\\OneIoT.Framework.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\OneIoT Framework\\OneIoT.Framework\\OneIoT.Framework\\OneIoT.Framework.csproj",
+        "projectUniqueName": "D:\\OneIoT Framework\\OneIoT.Framework\\OneIoT.Framework.csproj",
         "projectName": "OneIoT.Framework",
-        "projectPath": "D:\\OneIoT Framework\\OneIoT.Framework\\OneIoT.Framework\\OneIoT.Framework.csproj",
+        "projectPath": "D:\\OneIoT Framework\\OneIoT.Framework\\OneIoT.Framework.csproj",
         "packagesPath": "C:\\Users\\vince\\.nuget\\packages\\",
-        "outputPath": "D:\\OneIoT Framework\\OneIoT.Framework\\OneIoT.Framework\\obj\\",
+        "outputPath": "D:\\OneIoT Framework\\OneIoT.Framework\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
