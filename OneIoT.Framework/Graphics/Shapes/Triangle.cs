@@ -6,14 +6,15 @@ namespace OneIoT.Framework.Graphics.Shapes;
 
 public class Triangle : VisualElement
 {
-    
-    private new void Load()
-    {
-        
-    }
-
     public Triangle()
     {
+        base.Anchors = Anchors.MiddleCenter;
+        base.Size = new Size() { Width = 100, Height = 100 };
+    }
+    
+    public Triangle(IVisualElement parent)
+    {
+        base.Parent = parent;
         base.Anchors = Anchors.MiddleCenter;
         base.Size = new Size() { Width = 100, Height = 100 };
     }
@@ -23,5 +24,4 @@ public class Triangle : VisualElement
         base.Anchors = createAnchor;
         base.Size = size;
     }
-    
 }

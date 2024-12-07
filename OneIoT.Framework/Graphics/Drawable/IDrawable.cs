@@ -2,6 +2,6 @@
 
 public interface IDrawable
 {
-    public void Load();
+    // public void Load();
     
 }

@@ -30,7 +30,7 @@ namespace OneIoT.Framework
                 GLRenderer glRenderer = new GLRenderer(window);
                 Triangle triangle = new Triangle(Anchors.MiddleCenter, new Size(){Width = 100, Height = 100});
                 
-                glRenderer.Render(triangle);
+                // glRenderer.Render(triangle);
                 window.Run();
             }
             
