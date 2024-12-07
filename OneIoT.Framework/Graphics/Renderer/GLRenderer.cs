@@ -1,8 +1,12 @@
-﻿using System.Numerics;
+﻿using System.Diagnostics;
+// using System.Numerics;
 using OneIoT.Framework.Graphics.Shapes;
 using OneIoT.Framework.Graphics.VisualElements;
-using OneIoT.Framework.Graphics.Windowing;
+using OneIoT.Framework.Utils;
 using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
+using OpenTK.Windowing.GraphicsLibraryFramework;
+using Window = OneIoT.Framework.Graphics.Windowing.Window;
 
 namespace OneIoT.Framework.Graphics.Renderer;
 
@@ -10,6 +14,11 @@ namespace OneIoT.Framework.Graphics.Renderer;
 public class GLRenderer
 {
     private readonly Window _window;
+
+    // private Dictionary<string, IVisualElement> _renderedElements = new Dictionary<string, IVisualElement>();
+
+    private List<VisualElement> _renderedElements = new List<VisualElement>();
+    
     private Queue<IVisualElement> _renderQueue = new Queue<IVisualElement>();
 
     public GLRenderer(Window window)
@@ -20,6 +29,8 @@ public class GLRenderer
     public GLRenderer()
     {
     }
+
+    public List<VisualElement> GetRenderedElements => _renderedElements;
 
     private float[] CreateVerticesFromVector(Vector2 position) => new float[] { position.X, position.Y, 0.0f };
 
@@ -47,23 +58,37 @@ public class GLRenderer
     public void Render()
     {
         if (_renderQueue.Count == 0) return;
-
+        
+        _renderedElements.Clear();
+        
         while (_renderQueue.Count > 0)
         {
             var element = _renderQueue.Dequeue();
-
+            
+            if (element.Visible == false)
+            {
+                continue;
+            }
+            
+            _renderedElements.Add((VisualElement) element);
+            
             switch (element)
             {
                 case Triangle:
                 {
-                    RenderTriangle((Triangle)element);
+                    DrawTriangle((Triangle)element);
                     break;
                 }
+                case Box:
+                    DrawBox((Box) element);
+                    break;
             }
             
-            shader.Use();
-            shader.Dispose();
         }
+        shader.Use();
+        shader.Dispose();
+        
+        _window.SwapBuffers();
     }
 
     public void Render(IEnumerable<IVisualElement> childrens)
@@ -73,8 +98,9 @@ public class GLRenderer
             switch (child)
             {
                 case Triangle:
-                    RenderTriangle((Triangle)child);
+                    DrawTriangle((Triangle)child);
                     break;
+
             }
         }
     }
@@ -87,19 +113,58 @@ public class GLRenderer
     {
         
     }
+
+    /// <summary>
+    /// Draw with vertices and triangle
+    /// </summary>
+    private void Draw(float[] vertices)
+    {
+        bool normalized = vertices.All(v => v <= 1 && v >= -1);
+
+        if (!normalized)
+        {
+            for (int i = 0; i < vertices.Length; i += 3)
+            {
+                vertices[i] = CoordinateMapper.NormalizeX(vertices[i], _window.Size.Width);
+                vertices[i + 1] = CoordinateMapper.NormalizeY(vertices[i + 1], _window.Size.Height);
+            }
+        }
+        
+        int vbo = GL.GenBuffer();
+        int vao = GL.GenVertexArray();
+
+        GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
+        GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
+
+        GL.BindVertexArray(vao);
+        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
+
+        GL.EnableVertexAttribArray(0);
+
+        GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
+    }
+
+    private void DrawBox(Box box)
+    {
+        float[][] vertices = VisualElementHelper.TriangleFromBox(box.Points);
+        
+        Draw(vertices[0]);
+        Draw(vertices[1]);
+        
+    }
     
     /// <summary>
     /// This will render a triangle object
     /// </summary>
     /// <param name="triangle"></param>
-    private void RenderTriangle(Triangle triangle)
+    private void DrawTriangle(Triangle triangle)
     {
         float[] vertices = new float[9];
 
         // Calculate the screen center in normalized coordinatesvar
         var parent = triangle.Parent ?? _window;
         
-        var parentCenterPoint = triangle.CenterPoint ??  parent.CenterPoint ?? new OpenTK.Mathematics.Vector2(0, 0);
+        var parentCenterPoint = triangle.CenterPoint;
 
         // Calculate the triangle's centroid offsets
         float centroidX = triangle.Size.Width / 2f;
@@ -142,17 +207,19 @@ public class GLRenderer
         GL.EnableVertexAttribArray(0);
 
         GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
+        
+        //Make a logic on hover
+        //Mouse x is 
 
-
-            
+        
         //if has children render
         if (triangle.Children.Child.Count > 0)
         {
             Render(triangle.Children.Child);
         }
-        
-        // _window.SwapBuffers();
     }
+
+
 
 
     // public static void RenderTri()

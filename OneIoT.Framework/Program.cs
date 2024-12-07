@@ -12,30 +12,29 @@ namespace OneIoT.Framework
 {
     public class Program
     {
+        
+        /// <summary>
+        /// This is the starting point of the program, you can follow the process of making an UI with this framework
+        /// </summary>
         public static void Main()
         {
-            // Console.WriteLine(ScreenInfo.ScreenHeight);
-            
-            // using (Game game = new Game(1000, 1000, "Window"))
-            // {
-            //     game.Run();
-            // }
-            
-            
-            
-
-
-            using (Window window = new Window(1000, 1000, "Window"))
+            Window window = new Window(1000, 1000, "One.IoT Framework [Development]");
+          
+            Box box = new Box(window)
             {
-                GLRenderer glRenderer = new GLRenderer(window);
-                Triangle triangle = new Triangle(Anchors.MiddleCenter, new Size(){Width = 100, Height = 100});
-                
-                // glRenderer.Render(triangle);
-                window.Run();
-            }
+                Name = "Clickable",
+                Size = new Size()
+                {
+                    Width = 100f,
+                    Height = 100f
+                }
+            };
             
-            // glRenderer.Render(triangle);
             
+            window.AddChild(box);
+            window.Run();
+            window.Dispose();
         }
     }
+    
 }

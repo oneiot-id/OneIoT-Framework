@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using OneIoT.Framework.Events;
 using OneIoT.Framework.Graphics.Color;
 using OneIoT.Framework.Graphics.Renderer;
 using OneIoT.Framework.Graphics.Shapes;
@@ -10,42 +11,37 @@ using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
-#pragma warning disable CS0618 // Type or member is obsolete
+
+// #pragma warning disable CS0618 // Type or member is obsolete
 namespace OneIoT.Framework.Graphics.Windowing;
 
 public class Window : GameWindow, IVisualElement
 {
-    public bool IsLoaded { get; private set; }
-    public float ScreenWidth { get; private set; }
-    public float ScreenHeight { get; private set; }
-
     public GLRenderer GlRenderer;
+    public Event Event;
     
     public event Action UpdateFrameEvent;
+    public event Action MouseClickedEvent;
     
     public Window(int width, int height, string windowTitle)
         : base(GameWindowSettings.Default, new NativeWindowSettings() { Size = (width, height), Title = windowTitle })
     {
-        
-        ScreenWidth = width;
-        ScreenHeight = height;
-        
         GlRenderer = new GLRenderer(this);
+        Event = new Event(this);
         
-        Size = new Size(){Width = width, Height = height};
+        Size = new Size(){Width = height, Height = height};
         CenterPoint = new Vector2(Size.Width / 2, Size.Height / 2);
         
         UpdateFrameEvent += GlRenderer.Render;
+        MouseClickedEvent += Event.HandleMouseDown;
     }
 
     protected override void OnLoad()
     {
         base.OnLoad();
         GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        
-        IsLoaded = true;
     }
-
+    
     protected override void OnResize(ResizeEventArgs e)
     {
         base.OnResize(e);
@@ -55,53 +51,69 @@ public class Window : GameWindow, IVisualElement
         CenterPoint = new Vector2(Size.Width / 2, Size.Height / 2);
 
         GL.Viewport(0, 0, e.Width, e.Height);
+
+        foreach (var child in Children.Child)
+        {
+            child.CenterPoint = CenterPoint;
+        }
     }
 
+    // private Box box;
+
+    Triangle t1 = new Triangle()
+    {
+        Name = "Triangle 1",
+        CenterPoint = new Vector2(500, 500),
+        Color = new VisualElementColor()
+        {
+            BackgroundColor = new Colour(0x7F20BA)
+        },
+        Size = new Size()
+        {
+            Width = 200f,
+            Height = 200f
+        }
+    };
+        
+    Triangle t2 = new Triangle()
+    {
+        CenterPoint = new Vector2(100, 100),
+        Size = new Size()
+        {
+            Width = 50f,
+            Height = 50f
+        },
+        Color = new VisualElementColor()
+        {
+            BackgroundColor = new Colour(255f, 255f, 255f, 100f)
+        },
+        // Visible = false
+    };
+
+    private bool visible = false;
+    
     protected override void OnRenderFrame(FrameEventArgs args)
     {
         base.OnRenderFrame(args);
         GL.Clear(ClearBufferMask.ColorBufferBit);
-
-        Triangle t1 = new Triangle()
+        
+        foreach (var child in Children.Child)
         {
-            CenterPoint = this.CenterPoint,
-            Color = new VisualElementColor()
-            {
-                BackgroundColor = new Colour(0x7F20BA)
-            },
-            Size = new Size()
-            {
-                Width = 200f,
-                Height = 200f
-            }
-        };
+            GlRenderer.AddToRenderQueue(child);
+        }
         
-        Triangle t2 = new Triangle()
-        {
-            CenterPoint = new Vector2(100, 100),
-            Size = new Size()
-            {
-                Width = 50f,
-                Height = 50f
-            },
-            Color = new VisualElementColor()
-            {
-                BackgroundColor = new Colour(255f, 255f, 255f, 100f)
-            }
-        };
-        
-        // t1.AddChild(t2);
-        
-        GlRenderer.AddToRenderQueue(t1);
-        GlRenderer.AddToRenderQueue(t2);
         OnUpdateFrameEvent();
+        OnMouseEvent();
         
-        SwapBuffers();
+        //We need to adjust this based on the display rate (hz)
+        //We also need to do another method, with threading 
+        Thread.Sleep(1);
     }
 
     protected override void OnUpdateFrame(FrameEventArgs args)
     {
         base.OnUpdateFrame(args);
+
 
     }
     
@@ -110,11 +122,11 @@ public class Window : GameWindow, IVisualElement
         UpdateFrameEvent?.Invoke();
     }
 
-    public IVisualElement Parent { get; set; }
+    public string Name { get; set; }
     
-    public Children Children { get; set; }
+    public IVisualElement Parent { get; set; }
 
-    // public List<VisualElement> Children { get; set; }
+    public Children Children { get; set; } = new Children();
     
     public Transform Transform { get; set; }
     
@@ -122,12 +134,27 @@ public class Window : GameWindow, IVisualElement
     
     public VisualElementColor Color { get; set; }
     
-    public Anchors Anchors { get; set; }
+    public Anchors Anchor { get; set; }
+    public Anchors Origin { get; set; }
+
+    public Vector2 CenterPoint { get; set; }
     
-    public Vector2? CenterPoint { get; set; }
+    public bool Visible { get; set; }
 
     public void AddChild(IVisualElement element)
     {
+        Children.AddChildren(element);
+    }
+
+    public List<Point> Points { get; set; }
+
+    public void OnClick(Func<object> e)
+    {
         
+    }
+
+    protected virtual void OnMouseEvent()
+    {
+        MouseClickedEvent?.Invoke();
     }
 }

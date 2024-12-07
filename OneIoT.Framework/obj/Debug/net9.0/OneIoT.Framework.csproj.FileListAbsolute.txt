@@ -61,3 +61,4 @@ D:\OneIoT Framework\OneIoT.Framework\obj\Debug\net9.0\refint\OneIoT.Framework.dl
 D:\OneIoT Framework\OneIoT.Framework\obj\Debug\net9.0\OneIoT.Framework.pdb
 D:\OneIoT Framework\OneIoT.Framework\obj\Debug\net9.0\OneIoT.Framework.genruntimeconfig.cache
 D:\OneIoT Framework\OneIoT.Framework\obj\Debug\net9.0\ref\OneIoT.Framework.dll
+D:\OneIoT Framework\OneIoT.Framework\bin\Debug\net9.0\SharpDX.dll

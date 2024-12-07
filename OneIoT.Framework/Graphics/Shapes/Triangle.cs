@@ -1,27 +1,28 @@
 ﻿using OneIoT.Framework.Graphics.Drawable;
 using OneIoT.Framework.Graphics.VisualElements;
+using OpenTK.Mathematics;
 
 namespace OneIoT.Framework.Graphics.Shapes;
 
 
 public class Triangle : VisualElement
 {
+    public sealed override Vector2[] Points { get; set; } = new Vector2[3];
+
     public Triangle()
     {
-        base.Anchors = Anchors.MiddleCenter;
+        base.Anchor = Anchors.MiddleCenter;
         base.Size = new Size() { Width = 100, Height = 100 };
     }
-    
-    public Triangle(IVisualElement parent)
+
+    public Triangle(IVisualElement parent) : base(parent)
     {
-        base.Parent = parent;
-        base.Anchors = Anchors.MiddleCenter;
-        base.Size = new Size() { Width = 100, Height = 100 };
+        
     }
     
     public Triangle(Anchors createAnchor, Size size)
     {
-        base.Anchors = createAnchor;
+        base.Anchor = createAnchor;
         base.Size = size;
     }
 }

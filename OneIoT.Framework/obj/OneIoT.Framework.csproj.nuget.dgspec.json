@@ -53,6 +53,10 @@
             "OpenTK": {
               "target": "Package",
               "version": "[4.8.2, )"
+            },
+            "SharpDX": {
+              "target": "Package",
+              "version": "[4.2.0, )"
             }
           },
           "imports": [

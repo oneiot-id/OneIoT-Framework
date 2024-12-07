@@ -13,7 +13,7 @@ public class Tests
     [Test]
     public void Test1()
     {
-        Console.WriteLine(Transform.ToNormalX(512, 1000));
+        // Console.WriteLine(Transform.ToNormalX(512, 1000));
         Assert.Pass();
     }
 }
