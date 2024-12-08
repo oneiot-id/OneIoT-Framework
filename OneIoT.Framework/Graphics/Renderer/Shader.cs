@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using OneIoT.Framework.Configuration;
 using OneIoT.Framework.Graphics.Color;
 using OneIoT.Framework.Graphics.VisualElements;
 using OpenTK.Graphics.OpenGL4;
@@ -8,8 +9,51 @@ namespace OneIoT.Framework.Graphics.Renderer;
 public class Shader : IDisposable
 {
     public int Handle;
-    private int VertexShader;
-    private int FragmentShader;
+    private int _vertexShader;
+    private int _fragmentShader;
+
+    public Shader()
+    {
+        var shaderVert = File.ReadAllText(DynamicResourceLocator.ShaderPath);
+        var shaderFrag = File.ReadAllText(DynamicResourceLocator.FragmentPath);
+
+        _vertexShader = GL.CreateShader(ShaderType.VertexShader);
+        _fragmentShader = GL.CreateShader(ShaderType.FragmentShader);
+        
+        GL.ShaderSource(_vertexShader, shaderVert);
+        GL.ShaderSource(_fragmentShader, shaderFrag);
+        
+        GL.CompileShader(_vertexShader);
+        GL.CompileShader(_fragmentShader);
+        
+        GL.GetShader(_vertexShader, ShaderParameter.CompileStatus, out var s);
+        GL.GetShader(_fragmentShader, ShaderParameter.CompileStatus, out var s2);
+
+        if (s == 0 || s2 == 0)
+        {
+            string infoLog = GL.GetShaderInfoLog(_vertexShader);
+            Console.WriteLine(infoLog);
+        }
+
+        Handle = GL.CreateProgram();
+        GL.AttachShader(Handle, _vertexShader);
+        GL.AttachShader(Handle, _fragmentShader);
+        
+        GL.LinkProgram(Handle);
+        
+        GL.GetProgram(Handle, GetProgramParameterName.LinkStatus, out int success3);
+
+        if (success3 == 0)
+        {
+            string infoLog = GL.GetProgramInfoLog(Handle);
+            Console.WriteLine(infoLog);
+        }
+
+        GL.DetachShader(Handle, _vertexShader);
+        GL.DetachShader(Handle, _fragmentShader);
+        GL.DeleteShader(_fragmentShader);
+        GL.DeleteShader(_vertexShader);
+    }
     
     public Shader(IVisualElement? element = null)
     {
@@ -36,37 +80,37 @@ public class Shader : IDisposable
                                 FragColor =" + $" vec4({red}f, {green}f, {blue}f, {alpha}f);" + @"
                              }";
 
-        VertexShader = GL.CreateShader(ShaderType.VertexShader);
-        GL.ShaderSource(VertexShader, shaderVert);
+        _vertexShader = GL.CreateShader(ShaderType.VertexShader);
+        GL.ShaderSource(_vertexShader, shaderVert);
 
-        FragmentShader = GL.CreateShader(ShaderType.FragmentShader);
-        GL.ShaderSource(FragmentShader, shaderFrag);
+        _fragmentShader = GL.CreateShader(ShaderType.FragmentShader);
+        GL.ShaderSource(_fragmentShader, shaderFrag);
 
-        GL.CompileShader(VertexShader);
+        GL.CompileShader(_vertexShader);
 
-        GL.GetShader(VertexShader, ShaderParameter.CompileStatus, out var success);
+        GL.GetShader(_vertexShader, ShaderParameter.CompileStatus, out var success);
         // GL.GetShader();
 
         if (success == 0)
         {
-            string infoLog = GL.GetShaderInfoLog(VertexShader);
+            string infoLog = GL.GetShaderInfoLog(_vertexShader);
             Console.WriteLine(infoLog);
         }
 
-        GL.CompileShader(FragmentShader);
+        GL.CompileShader(_fragmentShader);
 
-        GL.GetShader(FragmentShader, ShaderParameter.CompileStatus, out var success2);
+        GL.GetShader(_fragmentShader, ShaderParameter.CompileStatus, out var success2);
 
         if (success2 == 0)
         {
-            string infoLog = GL.GetShaderInfoLog(FragmentShader);
+            string infoLog = GL.GetShaderInfoLog(_fragmentShader);
             Console.WriteLine(infoLog);
         }
 
         Handle = GL.CreateProgram();
 
-        GL.AttachShader(Handle, VertexShader);
-        GL.AttachShader(Handle, FragmentShader);
+        GL.AttachShader(Handle, _vertexShader);
+        GL.AttachShader(Handle, _fragmentShader);
 
         GL.LinkProgram(Handle);
 
@@ -78,46 +122,46 @@ public class Shader : IDisposable
             Console.WriteLine(infoLog);
         }
 
-        GL.DetachShader(Handle, VertexShader);
-        GL.DetachShader(Handle, FragmentShader);
-        GL.DeleteShader(FragmentShader);
-        GL.DeleteShader(VertexShader);
+        GL.DetachShader(Handle, _vertexShader);
+        GL.DetachShader(Handle, _fragmentShader);
+        GL.DeleteShader(_fragmentShader);
+        GL.DeleteShader(_vertexShader);
     }
 
 
     public Shader(string vertexCode, string fragmentCode)
     {
-        VertexShader = GL.CreateShader(ShaderType.VertexShader);
-        GL.ShaderSource(VertexShader, vertexCode);
+        _vertexShader = GL.CreateShader(ShaderType.VertexShader);
+        GL.ShaderSource(_vertexShader, vertexCode);
 
-        FragmentShader = GL.CreateShader(ShaderType.FragmentShader);
-        GL.ShaderSource(FragmentShader, fragmentCode);
+        _fragmentShader = GL.CreateShader(ShaderType.FragmentShader);
+        GL.ShaderSource(_fragmentShader, fragmentCode);
 
-        GL.CompileShader(VertexShader);
+        GL.CompileShader(_vertexShader);
 
-        GL.GetShader(VertexShader, ShaderParameter.CompileStatus, out var success);
+        GL.GetShader(_vertexShader, ShaderParameter.CompileStatus, out var success);
         // GL.GetShader();
 
         if (success == 0)
         {
-            string infoLog = GL.GetShaderInfoLog(VertexShader);
+            string infoLog = GL.GetShaderInfoLog(_vertexShader);
             Console.WriteLine(infoLog);
         }
 
-        GL.CompileShader(FragmentShader);
+        GL.CompileShader(_fragmentShader);
 
-        GL.GetShader(FragmentShader, ShaderParameter.CompileStatus, out var success2);
+        GL.GetShader(_fragmentShader, ShaderParameter.CompileStatus, out var success2);
 
         if (success2 == 0)
         {
-            string infoLog = GL.GetShaderInfoLog(FragmentShader);
+            string infoLog = GL.GetShaderInfoLog(_fragmentShader);
             Console.WriteLine(infoLog);
         }
 
         Handle = GL.CreateProgram();
 
-        GL.AttachShader(Handle, VertexShader);
-        GL.AttachShader(Handle, FragmentShader);
+        GL.AttachShader(Handle, _vertexShader);
+        GL.AttachShader(Handle, _fragmentShader);
 
         GL.LinkProgram(Handle);
 
@@ -129,10 +173,10 @@ public class Shader : IDisposable
             Console.WriteLine(infoLog);
         }
 
-        GL.DetachShader(Handle, VertexShader);
-        GL.DetachShader(Handle, FragmentShader);
-        GL.DeleteShader(FragmentShader);
-        GL.DeleteShader(VertexShader);
+        GL.DetachShader(Handle, _vertexShader);
+        GL.DetachShader(Handle, _fragmentShader);
+        GL.DeleteShader(_fragmentShader);
+        GL.DeleteShader(_vertexShader);
     }
 
     public void Use()

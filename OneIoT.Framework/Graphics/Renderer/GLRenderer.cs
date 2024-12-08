@@ -15,8 +15,8 @@ public class GLRenderer
 {
     private readonly Window _window;
 
-    // private Dictionary<string, IVisualElement> _renderedElements = new Dictionary<string, IVisualElement>();
-
+    Shader _shader = new Shader();
+    
     private List<VisualElement> _renderedElements = new List<VisualElement>();
     
     private Queue<IVisualElement> _renderQueue = new Queue<IVisualElement>();
@@ -66,45 +66,31 @@ public class GLRenderer
             var element = _renderQueue.Dequeue();
             
             if (element.Visible == false)
-            {
                 continue;
-            }
             
             _renderedElements.Add((VisualElement) element);
-            
-            switch (element)
-            {
-                case Triangle:
-                {
-                    DrawTriangle((Triangle)element);
-                    break;
-                }
-                case Box:
-                    DrawBox((Box) element);
-                    break;
-            }
-            
+            RenderElement(element);
         }
-        shader.Use();
-        shader.Dispose();
         
+        _shader.Use();
+        _shader.Dispose();
         _window.SwapBuffers();
     }
 
-    public void Render(IEnumerable<IVisualElement> childrens)
+    public void RenderElement(IVisualElement element)
     {
-        foreach (var child in childrens)
-        {
-            switch (child)
+            switch (element)
             {
                 case Triangle:
-                    DrawTriangle((Triangle)child);
+                    DrawTriangle((Triangle) element);
                     break;
-
-            }
+                case Box:
+                    DrawBox((Box) element);
+                    break;
         }
     }
-    Shader shader = new Shader();
+    
+    
 
     /// <summary>
     /// In future this will handle the transformation such as rotation, scaling, etc
@@ -117,13 +103,13 @@ public class GLRenderer
     /// <summary>
     /// Draw with vertices and triangle
     /// </summary>
-    private void Draw(float[] vertices)
+    private void Draw(float[] vertices, uint[]? indices = null)
     {
         bool normalized = vertices.All(v => v <= 1 && v >= -1);
 
         if (!normalized)
         {
-            for (int i = 0; i < vertices.Length; i += 3)
+            for (int i = 0; i < vertices.Length; i += 7 )
             {
                 vertices[i] = CoordinateMapper.NormalizeX(vertices[i], _window.Size.Width);
                 vertices[i + 1] = CoordinateMapper.NormalizeY(vertices[i + 1], _window.Size.Height);
@@ -132,25 +118,43 @@ public class GLRenderer
         
         int vbo = GL.GenBuffer();
         int vao = GL.GenVertexArray();
-
+        int ebo = GL.GenBuffer();
+        
         GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
         GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
-
+        
         GL.BindVertexArray(vao);
-        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
-
+        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 7 * sizeof(float), 0);
         GL.EnableVertexAttribArray(0);
+        GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, 7 * sizeof(float), 3 * sizeof(float));
+        GL.EnableVertexAttribArray(1);
 
-        GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
+        if (indices != null)
+        {
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, ebo);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
+            GL.DrawElements(PrimitiveType.Triangles, indices.Length, DrawElementsType.UnsignedInt, 0);
+        }
+        else
+        {
+            GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
+        }   
+        
     }
 
     private void DrawBox(Box box)
     {
-        float[][] vertices = VisualElementHelper.TriangleFromBox(box.Points);
-        
-        Draw(vertices[0]);
-        Draw(vertices[1]);
-        
+        float[] vertices1 = VisualElementHelper.GetBoxVertices(box);
+        uint[] indices = { 
+            0, 1, 2,   
+            2, 1, 3   
+        };
+        Draw(vertices1, indices);
+
+        foreach (var child in box.Children.Child)
+        {
+            RenderElement(child);
+        }
     }
     
     /// <summary>
@@ -215,7 +219,7 @@ public class GLRenderer
         //if has children render
         if (triangle.Children.Child.Count > 0)
         {
-            Render(triangle.Children.Child);
+            // RenderElement(triangle.Children.Child);
         }
     }
 

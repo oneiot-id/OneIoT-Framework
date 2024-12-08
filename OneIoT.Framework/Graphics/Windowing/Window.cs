@@ -41,6 +41,16 @@ public class Window : GameWindow, IVisualElement
         base.OnLoad();
         GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     }
+
+    private void UpdateChildren(IVisualElement visualElement)
+    {
+        visualElement.CenterPoint = CenterPoint;
+
+        foreach (var child in visualElement.Children.Child)
+        {
+            UpdateChildren(child);
+        }
+    }
     
     protected override void OnResize(ResizeEventArgs e)
     {
@@ -54,7 +64,7 @@ public class Window : GameWindow, IVisualElement
 
         foreach (var child in Children.Child)
         {
-            child.CenterPoint = CenterPoint;
+            UpdateChildren(child);
         }
     }
 

@@ -19,12 +19,14 @@
             
         }
         
+        protected Vector2 PositionOffset;
+        
         public string Name { get; set; } = null;
         
         public virtual IVisualElement? Parent { get; set; } = null;
 
         public virtual Children Children { get; set; } = new Children();
-
+    
         public virtual Transform Transform { get; set; } = new Transform();
 
         public virtual Size Size { get; set; } = new Size();
@@ -97,4 +99,55 @@
             _isClicked = false;
         }
 
+        protected virtual void CalculateAnchor()
+        {
+            var halfW = Size.Width / 2f;
+            var halfH = Size.Height / 2f;
+            
+            switch (Anchor)
+            {
+                case Anchors.TopLeft:
+                    PositionOffset.X += halfW;
+                    PositionOffset.Y += halfH;
+                    break;
+                case Anchors.TopCenter:
+                    PositionOffset.Y += halfH;
+                    break;
+                case Anchors.TopRight:
+                    PositionOffset.X -= halfW;
+                    PositionOffset.Y += halfH;
+                    break;
+                case Anchors.MiddleLeft:
+                    PositionOffset.X += halfW;
+                    break;
+                case Anchors.MiddleCenter:
+                    break;
+                case Anchors.MiddleRight:
+                    PositionOffset.X -= halfW;
+                    break;
+                case Anchors.BottomLeft:
+                    PositionOffset.X += halfW;
+                    PositionOffset.Y -= halfH;
+                    break;
+                case Anchors.BottomCenter:
+                    PositionOffset.Y -= halfH;
+                    break;
+                case Anchors.BottomRight:
+                    PositionOffset.X -= halfW;
+                    PositionOffset.Y -= halfH;
+                    break;
+            }
+        }
+
+        protected virtual void CalculateTranslation(Transform transform)
+        {
+            PositionOffset.X += transform.Position.X;
+            PositionOffset.Y += transform.Position.Y;
+        }
+
+        protected virtual void CalculateScaling(Transform transform)
+        {
+            Size.Width = Size.Width *  transform.Scale;
+            Size.Height = Size.Height * transform.Scale;
+        }
     }

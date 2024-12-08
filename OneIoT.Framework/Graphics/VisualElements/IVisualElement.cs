@@ -17,8 +17,14 @@ public interface IVisualElement : IDrawable
     
     public VisualElementColor Color { get; set; }
     
+    /// <summary>
+    /// Anchors is the center point of the object
+    /// </summary>
     public Anchors Anchor { get; set; }
     
+    /// <summary>
+    /// Origins is the center point of the parent object, only can used when on relative <see cref="Transform.Positioning"/>
+    /// </summary>
     public Anchors Origin { get; set; }
 
     public Vector2 CenterPoint { get; set; }
@@ -26,9 +32,6 @@ public interface IVisualElement : IDrawable
     public bool Visible { get; set; }
 
     public void AddChild(IVisualElement element);
-
-    // public List<Point> Points { get; set; }
     
     public delegate void ClickHandler(Func<object> e);
-    
 }

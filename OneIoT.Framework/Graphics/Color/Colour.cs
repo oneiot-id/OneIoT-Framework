@@ -33,9 +33,9 @@ public class Colour
     /// <param name="color"></param>
     public Colour(long color, float alpha)
     {
-        Red = color & 0xFF0000;
-        Green =  color & 0xFF0000;
-        Blue= color & 0xFF0000;
+        Red = (float) (color & 0xFF0000) / 0xFF0000;
+        Green =  (float) (color & 0x00FF00) / 0x00FF00;
+        Blue= (float) (color & 0x0000FF) / 0x0000FF;
         Alpha = Math.Clamp(alpha / 100f, 0f, 1f);
     }
 }
