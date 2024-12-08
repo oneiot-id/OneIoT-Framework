@@ -80,8 +80,8 @@ public class Window : GameWindow, IVisualElement
         },
         Size = new Size()
         {
-            Width = 200f,
-            Height = 200f
+            Width = 200,
+            Height = 200
         }
     };
         
@@ -90,8 +90,8 @@ public class Window : GameWindow, IVisualElement
         CenterPoint = new Vector2(100, 100),
         Size = new Size()
         {
-            Width = 50f,
-            Height = 50f
+            Width = 50,
+            Height = 50
         },
         Color = new VisualElementColor()
         {

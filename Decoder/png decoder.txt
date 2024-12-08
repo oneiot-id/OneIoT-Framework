@@ -1,0 +1,64 @@
+[Header]
+89 50 4E 47 0D 0A 1A 0A 
+
+[Chunk]
+00 00 00 0D 49 48 44 52
+
+red 1x1
+[0] = {byte} 0 0x0
+[1] = {byte} 255 0xFF
+[2] = {byte} 0 0x0
+[3] = {byte} 0 0x0
+[4] = {byte} 255 0xFF
+
+green 1x1
+[0] = {byte} 0 0x0
+[1] = {byte} 0 0x0
+[2] = {byte} 255 0xFF
+[3] = {byte} 0 0x0
+[4] = {byte} 255 0xFF
+
+blue 1x1
+[0] = {byte} 0 0x0
+[1] = {byte} 0 0x0
+[2] = {byte} 0 0x0
+[3] = {byte} 255 0xFF
+[4] = {byte} 255 0xFF
+
+byte[1] == red
+byte[2] == green
+byte[3] == blue
+
+[0] = {byte} 0 0x0 (header?)
+
+[1] = {byte} 255 0xFF (red)
+[2] = {byte} 0 0x0
+[3] = {byte} 0 0x0
+[4] = {byte} 255 0xFF (alpha?)
+
+[5] = {byte} 0 0x0 (red)
+[6] = {byte} 255 0xFF (green?)
+[7] = {byte} 0 0x0 (blue)
+[8] = {byte} 255 0xFF (alpha?)
+
+[9] = {byte} 0 0x0 (red)
+[10] = {byte} 0 0x0 (green)
+[11] = {byte} 255 0xFF (blue?)
+[12] = {byte} 255 0xFF (alpha)
+
+[13] = {byte} 0 0x0
+[14] = {byte} 255 0xFF
+[15] = {byte} 0 0x0
+[16] = {byte} 0 0x0
+
+[17] = {byte} 255 0xFF
+[18] = {byte} 0 0x0
+[19] = {byte} 255 0xFF
+[20] = {byte} 0 0x0
+
+[21] = {byte} 255 0xFF
+[22] = {byte} 0 0x0
+[23] = {byte} 0 0x0
+[24] = {byte} 255 0xFF
+
+[25] = {byte} 255 0xFF
