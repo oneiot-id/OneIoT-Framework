@@ -74,6 +74,10 @@
               "target": "Package",
               "version": "[4.2.0, )"
             },
+            "StbImageSharp": {
+              "target": "Package",
+              "version": "[2.30.15, )"
+            },
             "coverlet.collector": {
               "target": "Package",
               "version": "[6.0.2, )"
@@ -152,6 +156,10 @@
             "SharpDX": {
               "target": "Package",
               "version": "[4.2.0, )"
+            },
+            "StbImageSharp": {
+              "target": "Package",
+              "version": "[2.30.15, )"
             }
           },
           "imports": [

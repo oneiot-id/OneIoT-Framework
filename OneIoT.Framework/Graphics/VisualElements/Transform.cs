@@ -1,5 +1,5 @@
-﻿using System.Numerics;
-using OneIoT.Framework.Graphics.Transformation;
+﻿using OneIoT.Framework.Graphics.Transformation;
+using OpenTK.Mathematics;
 
 namespace OneIoT.Framework.Graphics.VisualElements;
 

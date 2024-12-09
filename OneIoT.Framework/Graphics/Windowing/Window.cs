@@ -112,12 +112,15 @@ public class Window : GameWindow, IVisualElement
             GlRenderer.AddToRenderQueue(child);
         }
         
+        GlRenderer.DrawIcon();
+        
+            
         OnUpdateFrameEvent();
         OnMouseEvent();
         
         //We need to adjust this based on the display rate (hz)
         //We also need to do another method, with threading 
-        Thread.Sleep(1);
+        Thread.Sleep(10);
     }
 
     protected override void OnUpdateFrame(FrameEventArgs args)
@@ -154,6 +157,15 @@ public class Window : GameWindow, IVisualElement
     public void AddChild(IVisualElement element)
     {
         Children.AddChildren(element);
+    }
+    
+    
+    public void AddChilds<T>(List<T> elements) where T : IVisualElement
+    {
+        foreach (var e in elements)
+        {
+            AddChild(e);
+        }
     }
 
     public List<Point> Points { get; set; }

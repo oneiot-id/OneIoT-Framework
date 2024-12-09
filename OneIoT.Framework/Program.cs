@@ -11,53 +11,81 @@ using OneIoT.Framework.Graphics.Shapes;
 using OneIoT.Framework.Graphics.VisualElements;
 using OneIoT.Framework.Graphics.Windowing;
 using OneIoT.Framework.IO.Images;
+using OpenTK.Windowing.Common.Input;
+using StbImageSharp;
+using Vector2 = OpenTK.Mathematics.Vector2;
 
 namespace OneIoT.Framework
 {
     public class Program
     {
+        private static readonly Lock _balanceLock = new Lock();
         
         /// <summary>
         /// This is the starting point of the program, you can follow the process of making an UI with this framework
         /// </summary>
         public static void Main()
         {
-            // Window window = new Window(1000, 1000, "One.IoT Framework [Development]");
-            //
-            // Box box = new Box(window)
-            // {
-            //     Name = "Clickable",
-            //     Anchor = Anchors.MiddleCenter,
-            //     Size = new Size()
-            //     {
-            //         Width = 100f,
-            //         Height = 100f
-            //     },
-            //     Transform = new Transform()
-            //     {
-            //         Scale = 1.5f,
-            //         // Position = new Vector2(50, 50)
-            //     }
-            // };
-            //
-            // Box box1 = new Box(window)
-            // {
-            //     Name = "Clickable2",
-            //     Color = new VisualElementColor()
-            //     {
-            //         BackgroundColor = new Colour(0xFFFFFF, 100)
-            //     }
-            // };
-            //     
-            //
-            // box.AddChild(box1);
-            // window.AddChild(box);
+            Window window = new Window(1000, 1000, "One.IoT Framework [Development]");
 
-            string path = @"D:\OneIoT Framework\Assets\aaa.png";
-            PngReader png = new PngReader(path);
+            Box box = new Box(window)
+            {
+                Size = new Size()
+                {
+                    Width = 100,
+                    Height = 100
+                },
+                Color = new VisualElementColor()
+                {
+                    BackgroundColor = new Colour(0xFFFFFF)
+                },
+                Transform = new Transform()
+                {
+                    Position = new Vector2(-100, 0)
+                }
+            };
+            
+            
+            window.AddChild(box);
+            window.Run();
+            window.Dispose();
+            // Thread t1 = new Thread(new ThreadStart(Main2));
+            // Thread t2= new Thread(new ThreadStart(Main3));
+            //
+            // t1.Start();
+            // t2.Start();
 
-            // window.Run();
-            // window.Dispose();
+            
+            
+            
+
+        }
+
+        public static void Main2()
+        {
+            while (true)
+            {
+                Test("from main 2");
+                // Console.WriteLine("main 2");
+            }
+        }
+        
+        public static void Main3()
+        {
+            while (true)
+            {
+                Test("from main 3");
+                // Console.WriteLine("main 3");
+            }
+        }
+
+        public static void Test(string msg)
+        {
+            // lock (_balanceLock)
+            // {
+                Console.WriteLine(msg);
+                Thread.Sleep(1000);
+            // }
         }
     }
     

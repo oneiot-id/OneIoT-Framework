@@ -14,18 +14,22 @@ public class Shader : IDisposable
 
     public Shader()
     {
-        var shaderVert = File.ReadAllText(DynamicResourceLocator.ShaderPath);
-        var shaderFrag = File.ReadAllText(DynamicResourceLocator.FragmentPath);
+        string shaderVert = "";
+        string shaderFrag = "";
+
+
+        shaderVert = File.ReadAllText(DynamicResourceLocator.ShaderPath2);
+        shaderFrag = File.ReadAllText(DynamicResourceLocator.FragmentPath2);
 
         _vertexShader = GL.CreateShader(ShaderType.VertexShader);
         _fragmentShader = GL.CreateShader(ShaderType.FragmentShader);
-        
+
         GL.ShaderSource(_vertexShader, shaderVert);
         GL.ShaderSource(_fragmentShader, shaderFrag);
-        
+
         GL.CompileShader(_vertexShader);
         GL.CompileShader(_fragmentShader);
-        
+
         GL.GetShader(_vertexShader, ShaderParameter.CompileStatus, out var s);
         GL.GetShader(_fragmentShader, ShaderParameter.CompileStatus, out var s2);
 
@@ -38,9 +42,9 @@ public class Shader : IDisposable
         Handle = GL.CreateProgram();
         GL.AttachShader(Handle, _vertexShader);
         GL.AttachShader(Handle, _fragmentShader);
-        
+
         GL.LinkProgram(Handle);
-        
+
         GL.GetProgram(Handle, GetProgramParameterName.LinkStatus, out int success3);
 
         if (success3 == 0)
@@ -54,13 +58,13 @@ public class Shader : IDisposable
         GL.DeleteShader(_fragmentShader);
         GL.DeleteShader(_vertexShader);
     }
-    
+
     public Shader(IVisualElement? element = null)
     {
         var bgColor = element?.Color.BackgroundColor ?? new Colour();
 
         var red = bgColor.Red.ToString("0.0", CultureInfo.InvariantCulture);
-        var green =bgColor.Green.ToString("0.0", CultureInfo.InvariantCulture);
+        var green = bgColor.Green.ToString("0.0", CultureInfo.InvariantCulture);
         var blue = bgColor.Blue.ToString("0.0", CultureInfo.InvariantCulture);
         var alpha = bgColor.Alpha.ToString("0.0", CultureInfo.InvariantCulture);
 

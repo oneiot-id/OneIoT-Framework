@@ -6,7 +6,9 @@ using OneIoT.Framework.Utils;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using StbImageSharp;
 using Window = OneIoT.Framework.Graphics.Windowing.Window;
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 namespace OneIoT.Framework.Graphics.Renderer;
 
@@ -28,6 +30,7 @@ public class GLRenderer
 
     public GLRenderer()
     {
+        
     }
 
     public List<VisualElement> GetRenderedElements => _renderedElements;
@@ -140,6 +143,16 @@ public class GLRenderer
             GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
         }   
         
+        // Unbind buffers and VAO
+        GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+        GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
+        GL.BindVertexArray(0);
+
+        // Delete buffers and VAO to clear them
+        GL.DeleteBuffer(vbo);
+        GL.DeleteBuffer(ebo);
+        GL.DeleteVertexArray(vao);
+        
     }
 
     private void DrawBox(Box box)
@@ -156,6 +169,94 @@ public class GLRenderer
             RenderElement(child);
         }
     }
+
+public void DrawIcon()
+{
+    var path = @"D:\OneIoT Framework\Assets\test.png";
+
+    // Load the image
+    ImageResult image = ImageResult.FromStream(File.OpenRead(path), ColorComponents.RedGreenBlueAlpha);
+
+    // Generate and bind the texture
+    int textureId = GL.GenTexture();
+    GL.BindTexture(TextureTarget.Texture2D, textureId);
+
+    // Set texture parameters
+    GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
+    GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
+    GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+    GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+
+    // Load texture data into OpenGL
+    GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, image.Width, image.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, image.Data);
+
+    // Generate a VAO and VBO for the quad
+    int vao = GL.GenVertexArray();
+    int vbo = GL.GenBuffer();
+
+    GL.BindVertexArray(vao);
+    GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
+
+    float[] vertices =
+    {
+        // Position         // Texture coordinates
+         0.5f,  0.5f, 0.0f, 1.0f, 1.0f, // top right
+         0.5f, -0.5f, 0.0f, 1.0f, 0.0f, // bottom right
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom left
+        -0.5f,  0.5f, 0.0f, 0.0f, 1.0f  // top left
+    };
+
+    uint[] indices =
+    {
+        0, 1, 3, // First triangle
+        1, 2, 3  // Second triangle
+    };
+
+    // Buffer data
+    GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
+
+    int ebo = GL.GenBuffer();
+    GL.BindBuffer(BufferTarget.ElementArrayBuffer, ebo);
+    GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
+
+    // Set up vertex attributes
+    GL.EnableVertexAttribArray(0); // Position
+    GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
+
+    GL.EnableVertexAttribArray(2); // Texture coordinates
+    GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
+
+    // Unbind the VAO (safe state)
+    GL.BindVertexArray(0);
+
+    // Activate shader program
+    // _shader.Use();
+
+    // Bind texture
+    GL.BindTexture(TextureTarget.Texture2D, textureId);
+
+    // Drawing
+    GL.BindVertexArray(vao);
+
+    // Render the quad with indices
+    GL.DrawElements(PrimitiveType.Triangles, indices.Length, DrawElementsType.UnsignedInt, 0);
+
+    // Unbind VAO and texture
+    GL.BindVertexArray(0);
+    GL.BindTexture(TextureTarget.Texture2D, 0);
+
+    // Cleanup resources (optional if this is the last usage)
+    GL.DeleteBuffer(vbo);
+    GL.DeleteBuffer(ebo);
+    GL.DeleteVertexArray(vao);
+    GL.DeleteTexture(textureId);
+
+    // Swap buffers (should be called at the end of frame rendering)
+    // _window.SwapBuffers();
+}
+
+
+
     
     /// <summary>
     /// This will render a triangle object

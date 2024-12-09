@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("OneIoT.Framework.Test")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+317e93cd593a4080f796489cbc48b8b9d3f5e0af")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5d2e207b3bd11a13cbd44fa4c4999825bb6a495c")]
 [assembly: System.Reflection.AssemblyProductAttribute("OneIoT.Framework.Test")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OneIoT.Framework.Test")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

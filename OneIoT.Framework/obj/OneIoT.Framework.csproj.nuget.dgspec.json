@@ -57,6 +57,10 @@
             "SharpDX": {
               "target": "Package",
               "version": "[4.2.0, )"
+            },
+            "StbImageSharp": {
+              "target": "Package",
+              "version": "[2.30.15, )"
             }
           },
           "imports": [

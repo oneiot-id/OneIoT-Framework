@@ -23,4 +23,7 @@ public class DynamicResourceLocator
 
     public static string ShaderPath = $@"{GetApplicationPath}\Graphics\Renderer\shader.vert";
     public static string FragmentPath = $@"{GetApplicationPath}\Graphics\Renderer\shader.frag";
+    
+    public static string ShaderPath2 = $@"{GetApplicationPath}\Graphics\Renderer\shader2.vert";
+    public static string FragmentPath2 = $@"{GetApplicationPath}\Graphics\Renderer\shader2.frag";
 }

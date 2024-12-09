@@ -2,6 +2,7 @@
 using System.IO.Compression;
 using System.Net.Mime;
 using System.Text;
+using OneIoT.Framework.Formats;
 using OneIoT.Framework.Graphics.Color;
 using OneIoT.Framework.Graphics.VisualElements;
 using OneIoT.Framework.IO.Files;
@@ -11,61 +12,97 @@ namespace OneIoT.Framework.IO.Images;
 
 public class PngReader
 {
+    public PngFormat PngFormat;
+
     public FilesInfo FileInfo;
-    
+
     private BinaryReader _dataStream;
-    
+
     public Size ImageSize = new Size();
 
-    public Dictionary<Vector2, Colour> ImageData = new Dictionary<Vector2, Colour>();
-    
+    public int BitsPerPixel;
+
+    // public 
+
+    public List<Colour> ImageColoursData = new List<Colour>();
+
+    private byte[] _decompressedData;
+
     public PngReader(string path)
     {
         FileInfo = new Files.FilesInfo(path);
-        
+
         var file = File.Open(path, FileMode.Open);
-        _dataStream = new BinaryReader(file, Encoding.UTF8, false);
         
+        _dataStream = new BinaryReader(file, Encoding.UTF8, false);
         Decode();
+        
+        file.Close();
     }
+
+    private int colorType;
 
     public void Decode()
     {
         //Decode signature
         SignatureCheck();
-        
-        List<byte> allIdatData = new List<byte>();  // Store the data from all IDAT chunks
+
+        List<byte> allIdatData = new List<byte>(); // Store the data from all IDAT chunks
 
         while (_dataStream.BaseStream.CanRead)
         {
             (string type, byte[] data) = ReadChunk();
 
-            if (type == "IHDR")
+            if (type == "IEND")
             {
-                ImageSize.Width = GetIntFromByte(data, 4, 0);
-                ImageSize.Height = GetIntFromByte(data, 4, 4);
+                Console.WriteLine("iEND");
+                break;
             }
 
-            if (type == "IEND")
-                break;
+            if (type == "IHDR")
+            {
+                ImageSize.Width = GetIntFromByte(data.ToArray(), 4, 0);
+                ImageSize.Height = GetIntFromByte(data.ToArray(), 4, 4);
+
+                PngFormat = new PngFormat()
+                {
+                    BitDepth = data[8],
+                    ImageSize = ImageSize,
+                    PngColor = (PngColor)data[9]
+                };
+                Console.WriteLine("IHDR");
+            }
 
             if (type == "IDAT")
             {
                 allIdatData.AddRange(data);
+                Console.WriteLine("IDAT");
+            }
+
+            if (type == "PLTE")
+            {
+                /*
+                 * PLTE first 3 bytes is RGB Pallette
+                 * the next bytes is indexer or palette entries, the size cannot exceed the range of BitDepth defined by IHDR
+                 * for example 2 ^ 4 = 16 for a bit depth of 4
+                 */
+                Console.WriteLine("PLTE");
+                
+                
             }
         }
+
         DecompressIdatData(allIdatData);
-        GetPngData();
+        LoadPngData();
     }
 
-    private byte[] _decompressedData;
-    
+
     public void DecompressIdatData(List<byte> idatData)
     {
         try
         {
             // Remove the Zlib header (first 2 bytes)
-            byte[] zlibData = idatData.Skip(2).ToArray(); 
+            byte[] zlibData = idatData.Skip(2).ToArray();
 
             using (var compressedStream = new MemoryStream(zlibData))
             using (var deflateStream = new DeflateStream(compressedStream, CompressionMode.Decompress))
@@ -81,7 +118,10 @@ public class PngReader
         }
     }
 
-    private void GetPngData()
+    /// <summary>
+    ///  Need to fix this <see cref="GetColorFromPalette"/>
+    /// </summary>
+    private void LoadPngData()
     {
         int offset = 0;
 
@@ -95,16 +135,16 @@ public class PngReader
                 var g = _decompressedData[offset + 1];
                 var b = _decompressedData[offset + 2];
                 var a = _decompressedData[offset + 3];
-                
-                ImageData.Add(new Vector2(j, i), new Colour(r, g, b, a));
+
+                ImageColoursData.Add(new Colour(r, g, b, a));
                 offset += 4;
             }
         }
     }
-        
+
     private bool SignatureCheck()
     {
-        var signature = new byte[] {0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A,  0x1A,  0x0A };
+        var signature = new byte[] { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A };
         var data = _dataStream.ReadBytes(8);
 
         if (data.Length != signature.Length)
@@ -137,25 +177,24 @@ public class PngReader
 
         for (int i = offset; i < length + offset; i++)
         {
-            result = data[i] << pow;
+            result |= data[i] << pow * 8;
             pow--;
         }
 
         return result;
     }
-    
+
     private int GetIntFromByte(int length)
     {
         int result = 0;
-        int b = length -1 ;
-        
+        int b = length - 1;
+
         for (int i = 0; i < length; i++)
         {
-            result = _dataStream.ReadByte() << b;
+            result |= _dataStream.ReadByte() << b * 8;
             b--;
         }
 
         return result;
     }
-
 }
